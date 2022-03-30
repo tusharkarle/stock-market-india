@@ -9,6 +9,11 @@ function getIndices() {
   return API.getIndices();
 }
 
+function getAllStocks() {
+  return 
+}
+
+
 /**
  * Fetch Index info, eg., high, low, open etc…
  * @param symbolKey {number} Index 'key' value
