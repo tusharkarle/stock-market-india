@@ -1,18 +1,13 @@
-var API = require('./service/API');
-var emptyData = require('./constant/emptyData');
+var API = require("./service/API");
+var emptyData = require("./constant/emptyData");
 
 /**
  * API returning top indices
  * @returns {*}
  */
 function getIndices() {
-  return API.getIndices();
+	return API.getIndices();
 }
-
-function getAllStocks() {
-  return 
-}
-
 
 /**
  * Fetch Index info, eg., high, low, open etc…
@@ -20,7 +15,7 @@ function getAllStocks() {
  * @returns {*}
  */
 function getIndexInfo(symbolKey) {
-  return API.getIndexInfo(symbolKey);
+	return API.getIndexInfo(symbolKey);
 }
 
 /**
@@ -30,7 +25,7 @@ function getIndexInfo(symbolKey) {
  * @returns {*}
  */
 function getIndexChartData(key, time) {
-  return API.getIndexChartData(key, time);
+	return API.getIndexChartData(key, time);
 }
 
 /**
@@ -39,7 +34,7 @@ function getIndexChartData(key, time) {
  * @returns {*}
  */
 function getIndexStocks(symbolKey) {
-  return API.getIndexStocks(symbolKey);
+	return API.getIndexStocks(symbolKey);
 }
 
 /**
@@ -48,19 +43,27 @@ function getIndexStocks(symbolKey) {
  * @returns {Promise}
  */
 function getCompanyInfo(securityCode) {
-  return API.getCompanyInfo(securityCode)
-    .then(function (response) {
-      return new Promise(function (resolve, reject) {
-        if (response.length === 3) {
-          resolve(Object.assign(emptyData.emptyCompanyInfo, response[0].data, response[1].data, response[2].data))
-        } else {
-          reject(emptyData.emptyCompanyInfo);
-        }
-      });
-    }).catch(function (reason) {
-      console.log(reason);
-      // return new Promise.reject(reason);
-    });
+	return API.getCompanyInfo(securityCode)
+		.then(function (response) {
+			return new Promise(function (resolve, reject) {
+				if (response.length === 3) {
+					resolve(
+						Object.assign(
+							emptyData.emptyCompanyInfo,
+							response[0].data,
+							response[1].data,
+							response[2].data
+						)
+					);
+				} else {
+					reject(emptyData.emptyCompanyInfo);
+				}
+			});
+		})
+		.catch(function (reason) {
+			console.log(reason);
+			// return new Promise.reject(reason);
+		});
 }
 
 /**
@@ -70,7 +73,7 @@ function getCompanyInfo(securityCode) {
  * @returns {*}
  */
 function getStocksChartData(securityCode, flag) {
-  return API.getStocksChartData(securityCode, flag);
+	return API.getStocksChartData(securityCode, flag);
 }
 
 /**
@@ -79,7 +82,7 @@ function getStocksChartData(securityCode, flag) {
  * @returns {*}
  */
 function getStockInfoAndDayChartData(securityCode) {
-  return API.getStockInfoAndDayChartData(securityCode);
+	return API.getStockInfoAndDayChartData(securityCode);
 }
 
 /**
@@ -87,7 +90,7 @@ function getStockInfoAndDayChartData(securityCode) {
  * @returns {*}
  */
 function getGainers() {
-  return API.getGainers();
+	return API.getGainers();
 }
 
 /**
@@ -95,7 +98,7 @@ function getGainers() {
  * @returns {*}
  */
 function getLosers() {
-  return API.getLosers();
+	return API.getLosers();
 }
 
 /**
@@ -103,7 +106,7 @@ function getLosers() {
  * @returns {*}
  */
 function getTopTurnOvers() {
-  return API.getTopTurnOvers();
+	return API.getTopTurnOvers();
 }
 
 /**
@@ -112,21 +115,21 @@ function getTopTurnOvers() {
  * @returns {*}
  */
 function getStockMarketDepth(securityCode) {
-  return API.getStockMarketDepth(securityCode);
+	return API.getStockMarketDepth(securityCode);
 }
 
 var bse = {
-  getIndices: getIndices,
-  getIndexInfo: getIndexInfo,
-  getIndexChartData: getIndexChartData,
-  getIndexStocks: getIndexStocks,
-  getCompanyInfo: getCompanyInfo,
-  getStocksChartData: getStocksChartData,
-  getStockInfoAndDayChartData: getStockInfoAndDayChartData,
-  getGainers: getGainers,
-  getLosers: getLosers,
-  getTopTurnOvers: getTopTurnOvers,
-  getStockMarketDepth: getStockMarketDepth
+	getIndices: getIndices,
+	getIndexInfo: getIndexInfo,
+	getIndexChartData: getIndexChartData,
+	getIndexStocks: getIndexStocks,
+	getCompanyInfo: getCompanyInfo,
+	getStocksChartData: getStocksChartData,
+	getStockInfoAndDayChartData: getStockInfoAndDayChartData,
+	getGainers: getGainers,
+	getLosers: getLosers,
+	getTopTurnOvers: getTopTurnOvers,
+	getStockMarketDepth: getStockMarketDepth,
 };
 
 module.exports = bse;

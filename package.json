@@ -34,6 +34,7 @@
 		"cors": "^2.8.5",
 		"express": "^4.16.4",
 		"indian-stock-exchange": "^1.3.33",
+		"jsonwebtoken": "^8.5.1",
 		"loadash": "^1.0.0",
 		"mongoose": "^6.2.9"
 	}

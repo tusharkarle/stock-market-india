@@ -268,16 +268,103 @@ app.get("/bse/getTopTurnOvers", (req, res, next) => {
 
 app.use(express.json());
 const names = require("./bse/constant/names");
-// api used for
+const stockList = require("./nse/allStocksList/list");
+const UserModel = require("./src/mongoDb/userModel");
+const jwt = require("jsonwebtoken");
 
-app.get("/userdata", async (req, res) => {
+// API's for the mongo
+
+app.get("/getstocklist", async (req, res) => {
 	try {
-		// res.send("hello");
-		// res.send(req.body);
+		res.send(stockList);
+	} catch (error) {
+		res.status(400).send("Error");
+	}
+});
 
-		res.send(names.getName());
-	} catch (err) {
-		res.status(400).send(err);
+app.post("/registeruser", async (req, res) => {
+	try {
+		let userData = req.body;
+		let registerUser = new userModel(userData);
+		// res.send(registerUser);
+		registerUser.save((err, result) => {
+			if (err) {
+				res.send(err);
+			} else {
+				let payload = { subject: registerUser._id };
+				let token = jwt.sign(payload, "secretkey");
+				res.send({ token });
+			}
+		});
+	} catch (error) {
+		res.status(401).send(error);
+	}
+});
+
+app.post("/login", async (req, res) => {
+	try {
+		let userData = req.body;
+		console.log(userData);
+		const user = await userModel.findOne({
+			"userlogin.email": userData.email,
+		});
+		// console.log(user);
+		if (!user) {
+			res.status(400).send("User not found");
+		} else {
+			if (user.userlogin.password != userData.password) {
+				res.status(400).send("Password err");
+			} else {
+				// create an token and send it to the browser ie as response
+				let payload = { subject: user._id };
+				let token = jwt.sign(payload, "secretkey");
+				res.send({ token });
+			}
+		}
+	} catch (error) {
+		res.send(401).send(error);
+	}
+});
+
+app.patch("/addPortfolio", async (req, res) => {
+	try {
+		let stock = req.body.stocks;
+		let token = req.body.token;
+		console.log(stock);
+		let payload = jwt.verify(token, "secretkey");
+		if (!payload) {
+			return res.status(401).send("unauthorized Request");
+		}
+		userId = payload.subject;
+
+		let updateUser = await userModel.updateOne(
+			{ _id: userId },
+			{
+				$addToSet: {
+					watchlist: [stock],
+				},
+			}
+		);
+		res.status(201).send(updateUser);
+	} catch (error) {
+		res.status(401).send(error);
+	}
+});
+
+app.post("/loadWatchlist", async (req, res) => {
+	try {
+		let token = req.body.token;
+		console.log(token);
+		let payload = jwt.verify(token, "secretkey");
+		if (!payload) {
+			return res.status(401).send("unauthorized Request");
+		}
+		userId = payload.subject;
+
+		let updateUser = await userModel.findOne({ _id: userId });
+		res.send(updateUser.watchlist);
+	} catch (error) {
+		res.status(401).send(error);
 	}
 });
 
