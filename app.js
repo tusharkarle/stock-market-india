@@ -368,4 +368,31 @@ app.post("/loadWatchlist", async (req, res) => {
 	}
 });
 
+app.post("/removeStockWatchlist", async (req, res) => {
+	try {
+		watchlistGiven = req.body.name;
+		let token = req.body.token;
+		console.log(token);
+		let payload = jwt.verify(token, "secretkey");
+		if (!payload) {
+			return res.status(401).send("unauthorized Request");
+		}
+		userId = payload.subject;
+		let updateUser = await userModel.findOne({ _id: userId });
+		watchlistFilter = watchlistFilter.filter(
+			(item) => item.data[0].symbol != stockName
+		);
+
+		const userFinal = await userModel.findByIdAndUpdate(
+			{ _id: userId },
+			{
+				$set: { watchlist: watchlistFilter },
+			}
+		);
+		res.send(userFinal);
+	} catch (error) {
+		res.status(401).send(error);
+	}
+});
+
 module.exports = app;
