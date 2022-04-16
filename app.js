@@ -379,19 +379,29 @@ app.post("/removeStockWatchlist", async (req, res) => {
 		}
 		userId = payload.subject;
 		let updateUser = await userModel.findOne({ _id: userId });
-		watchlistFilter = watchlistFilter.filter(
-			(item) => item.data[0].symbol != stockName
-		);
+		console.log(updateUser);
+		watchlistFilter = updateUser.watchlist;
+		console.log(watchlistFilter);
+		console.log(watchlistGiven);
+
+		selectedWatchlist = [];
+		watchlistFilter.forEach((element) => {
+			if (element[0] != watchlistGiven) {
+				selectedWatchlist.push(element);
+			}
+		});
+
+		console.log(selectedWatchlist);
 
 		const userFinal = await userModel.findByIdAndUpdate(
 			{ _id: userId },
 			{
-				$set: { watchlist: watchlistFilter },
+				$set: { watchlist: selectedWatchlist },
 			}
 		);
 		res.send(userFinal);
 	} catch (error) {
-		res.status(401).send(error);
+		res.status(404).send(error);
 	}
 });
 
